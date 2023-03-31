@@ -1,3 +1,3 @@
 # Checkers
-игра шашки
-python pygame
+-игра шашки
+-python pygame
