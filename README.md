@@ -13,3 +13,6 @@
 
 ![Процесс игры](images/readme1.png "Процесс игры")
 ![Чёрные апельсины победили!](images/readme1.png "Чёрные апельсины победили!")
+
+
+<img src="images/readme1.png alt="Меню" width="600"/>
