@@ -17,4 +17,4 @@
 
 <img src="images/readme1.png alt="Меню" width="600"/>
 
-<img src="images/readme1.png" alt="Меню" width="50%" height="50%" />
+<img src="images/readme1.png" title="Меню" width="50%" height="50%" />
