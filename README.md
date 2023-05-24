@@ -9,7 +9,7 @@
 В файле settings.py можно указать новые ветовые схемы доски и шашек
 
 
-![alt text](images/readme1.png "Title")
+![Меню](images/readme1.png "Меню")
 
-![alt text](images/readme1.png "Title")
-![alt text](images/readme1.png "Title")
+![Процесс игры](images/readme1.png "Процесс игры")
+![Чёрные апельсины победили!](images/readme1.png "Чёрные апельсины победили!")
