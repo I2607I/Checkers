@@ -24,6 +24,7 @@ KING_MOVE_ONE_STEP = False    # дамка делает один шаг
 SIMPLE_STOP = False           # происходит остановка при становлении дамкой
 SIZE_FIELD = 100
 COUNT_FIELD = 8
+countCheckers = dict()
 
 
 WHITECHECKER = WHITE
@@ -157,7 +158,6 @@ sound_win = pygame.mixer.Sound('sounds/win.ogg')
 def createField(COLORFIELD, STYLECHECKER):
     global field
     field = [[0 for j in range(COUNT_FIELD)] for i in range(COUNT_FIELD)]
-    print(STYLECHECKER)
     BLACKBIELD, WHITEFIELD = COLORFIELD[0], COLORFIELD[1]
     if STYLECHECKER[0] == True:
         global BLACKCHECKER
@@ -225,8 +225,6 @@ surf_finish = pygame.Surface((1200, 1200))
 surf_finish.fill(ALMOND_CRAYOLA)
 surf_finish.set_colorkey(ALMOND_CRAYOLA)
 surf_finish_rect = surf_finish.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)//2+SIZE_FIELD*COUNT_FIELD, centery = 80*4)
-print(surf_finish_rect.x, surf_finish_rect.y)
-# pygame.draw.rect(surf_finish, ALMOND_CRAYOLA, (0, 0, 300, 80))
 Button(surf_finish, (W+SIZE_FIELD*COUNT_FIELD)//2 - 150, 80*4, 300, 80, 'Играть снова')
 
 pygame.display.update()
@@ -248,27 +246,22 @@ def check_checker_can_fight(i, j, color1, color2):
 # совершает ход белой шашкой, если это возможно
 def check_whites_move(i, j, xPrev, yPrev):
     if field[yPrev][xPrev].color == WHITECHECKER and i == yPrev - 1 and (j == xPrev - 1 or j == xPrev + 1) and field[i][j].isChecker == False:
-        print(111)
         return 1
     elif field[yPrev][xPrev].color == WHITECHECKER and i == yPrev - 2 and j == xPrev - 2 and field[i][j].isChecker == False and field[yPrev-1][xPrev-1].isChecker == True and field[yPrev-1][xPrev-1].color == BLACKCHECKER:
         field[yPrev-1][xPrev-1].isChecker = False
         field[yPrev-1][xPrev-1].color = -1
-        print(222)
         return 2
     elif field[yPrev][xPrev].color == WHITECHECKER and i == yPrev - 2 and j == xPrev + 2 and field[i][j].isChecker == False and field[yPrev-1][xPrev+1].isChecker == True and field[yPrev-1][xPrev+1].color == BLACKCHECKER:
         field[yPrev-1][xPrev+1].isChecker = False
         field[yPrev-1][xPrev+1].color = -1
-        print(333)
         return 2
     elif field[yPrev][xPrev].color == WHITECHECKER and i == yPrev + 2 and j == xPrev - 2 and field[i][j].isChecker == False and field[yPrev+1][xPrev-1].isChecker == True and field[yPrev+1][xPrev-1].color == BLACKCHECKER:
         field[yPrev+1][xPrev-1].isChecker = False
         field[yPrev+1][xPrev-1].color = -1
-        print(444)
         return 2
     elif field[yPrev][xPrev].color == WHITECHECKER and i == yPrev + 2 and j == xPrev + 2 and field[i][j].isChecker == False and field[yPrev+1][xPrev+1].isChecker == True and field[yPrev+1][xPrev+1].color == BLACKCHECKER:
         field[yPrev+1][xPrev+1].isChecker = False
         field[yPrev+1][xPrev+1].color = -1
-        print(555)
         return 2
     return 0
 
@@ -329,8 +322,7 @@ def check_king_can_fight(i, j, color1, color2):
         if colorOnRoad:
             for item in tmpres:
                 res.append(item)
-    print('here', res)
-    printCoordinates(res)
+    # printCoordinates(res)
     return res
 
 # совершает ход дамкой, если это возможно
@@ -345,8 +337,6 @@ def check_king_move(i, j, xPrev, yPrev, color1, color2, needFight):
             listl = [_ for _ in range(1, j - xPrev)]
         else:
             listl = [_ for _ in range(-1, j - xPrev, -1)]
-        print(listk)
-        print(listl)
         for k, l in zip(listk, listl):
             if field[yPrev + k][xPrev + l].isChecker and field[yPrev + k][xPrev + l].color == color1:
                 return False
@@ -400,7 +390,6 @@ def check_blacks_can_move(i, j):
     
 
 
-
 while 1:
     event_list = pygame.event.get()
     for event in event_list:
@@ -412,17 +401,13 @@ while 1:
                 flagBackground = 1
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if flagBackground == 1:
-                    # print(event.pos)
-                    # print(event.pos[0]//SIZE_FIELD, event.pos[1]//SIZE_FIELD)
                     ii, jj = event.pos[0]//SIZE_FIELD, event.pos[1]//SIZE_FIELD
-                    
                     for i in range(COUNT_FIELD):
                         for j in range(COUNT_FIELD):
                             if j == ii and i == jj:
                                 field[i][j].clicked = True
                             else:
                                 field[i][j].clicked = False
-                    
                     list_white_can_fight = []
                     list_black_can_fight = []
                     for i in range(COUNT_FIELD):
@@ -442,7 +427,6 @@ while 1:
                             for j in range(COUNT_FIELD):
                                 if field[i][j] not in list_black_can_fight and field[i][j].isChecker:
                                     field[i][j].clicked = False
-                    print('list_black_fight',list_black_can_fight)
                     if prevfight in list_black_can_fight:
                         isMOveWhite = False
                         if prevfight.isKing:
@@ -466,27 +450,23 @@ while 1:
                         if field[jj][ii] not in res:
                             prevfight.clicked = True
                             field[jj][ii].clicked = False
-                        # prevfight.clicked = True
                         yPrev = prevfighti
                         xPrev = prevfightj
 
-                    # print(isMOveWhite)
-                    for iii in range(COUNT_FIELD):
-                        for jjj in range(COUNT_FIELD):
-                            print(field[iii][jjj].clicked, end='    ')
-                        print()
-                
+                    # for iii in range(COUNT_FIELD):
+                    #     for jjj in range(COUNT_FIELD):
+                    #         print(field[iii][jjj].clicked, end='    ')
+                    #     print()
+
             if event.type == pygame.QUIT:
                 exit()
 
     sc.fill(WHITE)
     flagDo = False
-    # flagCheckersOnRoad = False
     if flagBackground == 1:
         for i in range(COUNT_FIELD):
             for j in range(COUNT_FIELD):
                 if field[i][j].clicked:
-                    # print(i, j)
                     if isMOveWhite:
                         if not field[yPrev][xPrev].isKing:
                             if check_checker_can_fight(yPrev, xPrev, WHITECHECKER, BLACKCHECKER):
@@ -506,9 +486,9 @@ while 1:
                                 field[i][j].color = WHITECHECKER
                                 field[yPrev][xPrev].isChecker = False
                         else:
-                            if check_king_can_fight(yPrev, xPrev, WHITECHECKER, BLACKCHECKER): # если может бить, то бить
+                            if check_king_can_fight(yPrev, xPrev, WHITECHECKER, BLACKCHECKER):  # если может бить, то бить
                                 flagDo = check_king_move(i, j, xPrev, yPrev, WHITECHECKER, BLACKCHECKER, True)
-                                print('YES FIGHT KING')
+                                # print('YES FIGHT KING')
                                 if flagDo:
                                     prevfighti = i
                                     prevfightj = j
@@ -518,20 +498,19 @@ while 1:
                                 flagDo = check_king_move(i, j, xPrev, yPrev, WHITECHECKER, BLACKCHECKER, False)
                                 if flagDo:
                                     prevfight = -1
-                                print('NO FIGHT')
-
+                                # print('NO FIGHT')
 
                         # создание дамки
                         if i == 0 and field[i][j].isChecker and field[i][j].color == WHITECHECKER:
-                                field[i][j].isKing = True
+                            field[i][j].isKing = True
 
-                        if field[i][j].color == BLACKCHECKER and field[i][j].isChecker == True:
+                        if field[i][j].color == BLACKCHECKER and field[i][j].isChecker is True:
                             field[i][j].clicked = False
                     else:
                         if not field[yPrev][xPrev].isKing:
                             if check_checker_can_fight(yPrev, xPrev, BLACKCHECKER, WHITECHECKER):
                                 if max(i, yPrev) - min(i, yPrev) != 1 and check_blacks_move(i, j, xPrev, yPrev):
-                                    countCheckers[WHITECHECKER] -= 1 
+                                    countCheckers[WHITECHECKER] -= 1
                                     flagDo = True
                                     prevfighti = i
                                     prevfightj = j
@@ -546,9 +525,9 @@ while 1:
                                 field[i][j].color = BLACKCHECKER
                                 field[yPrev][xPrev].isChecker = False
                         else:
-                            if check_king_can_fight(yPrev, xPrev, BLACKCHECKER, WHITECHECKER): # если может бить, то бить
+                            if check_king_can_fight(yPrev, xPrev, BLACKCHECKER, WHITECHECKER):   # если может бить, то бить
                                 flagDo = check_king_move(i, j, xPrev, yPrev, BLACKCHECKER, WHITECHECKER, True)
-                                print('YES FIGHT')
+                                # print('YES FIGHT')
                                 if flagDo:
                                     prevfighti = i
                                     prevfightj = j
@@ -556,14 +535,15 @@ while 1:
                                     prevfight = field[i][j]
                             else:
                                 flagDo = check_king_move(i, j, xPrev, yPrev, BLACKCHECKER, WHITECHECKER, False)
-                                print('NO FIGHT')
+                                # print('NO FIGHT')
                                 if flagDo:
                                     prevfight = -1
 
-                        if i == 7 and field[i][j].isChecker and field[i][j].color == BLACKCHECKER:
-                                field[i][j].isKing = True
+                        # создание дамки
+                        if i == COUNT_FIELD - 1 and field[i][j].isChecker and field[i][j].color == BLACKCHECKER:
+                            field[i][j].isKing = True
 
-                        if field[i][j].color == WHITECHECKER and field[i][j].isChecker == True:
+                        if field[i][j].color == WHITECHECKER and field[i][j].isChecker is True:
                             field[i][j].clicked = False
 
                     xPrev = j
@@ -575,7 +555,7 @@ while 1:
                             not_find_color = WHITECHECKER
                         else:
                             find_color = WHITECHECKER
-                            not_find_color = BLACKCHECKER   
+                            not_find_color = BLACKCHECKER
                         for ii in range(COUNT_FIELD):
                             for jj in range(COUNT_FIELD):
                                 if field[ii][jj].isChecker and field[ii][jj].color == find_color and not field[ii][jj].isKing:
@@ -616,15 +596,17 @@ while 1:
                 prevfighti = -1
                 prevfightj = -1
                 prevfight = -1
-                print(indexStyle)             
                 if indexStyle == 3:
                     SIZE_FIELD = 80
                     COUNT_FIELD = 10
+                else:
+                    SIZE_FIELD = 100
+                    COUNT_FIELD = 8
                 group = createField(listColorStyle[indexColorStyle], listCheckerStyle[indexCheckerStyle])
                 if indexStyle == 3:
                     countCheckers = {BLACKCHECKER: 20, WHITECHECKER: 20}
                 else:
-                    countCheckers = {BLACKCHECKER: 12, WHITECHECKER: 12}       
+                    countCheckers = {BLACKCHECKER: 12, WHITECHECKER: 12}
             elif z == 2:
                 indexStyle += 1
                 if indexStyle == len(listStyle):
@@ -638,49 +620,42 @@ while 1:
                 indexCheckerStyle += 1
                 if indexCheckerStyle == len(listCheckerStyle):
                     indexCheckerStyle = 0
-                
+
     elif flagBackground == 1:
         group.update(event_list)
         group.draw(sc)
         text_count_black = my_font2.render(f'{countCheckers[BLACKCHECKER]}', False, (0, 0, 0))
-        text_count_black_rect = text_black.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)*0.75, centery = (80*2))
-
+        text_count_black_rect = text_black.get_rect(centerx=(W - SIZE_FIELD * COUNT_FIELD) * 0.75, centery=(80 * 2))
         text_count_white = my_font2.render(f'{countCheckers[WHITECHECKER]}', False, (0, 0, 0))
-        text_count_white_rect = text_white.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)*0.25, centery = (80*2))
+        text_count_white_rect = text_white.get_rect(centerx=(W - SIZE_FIELD * COUNT_FIELD) * 0.25, centery=(80 * 2))
         surf_alpha.fill(ALMOND_CRAYOLA)
         surf_alpha.blit(text_surface, text_rect)
         surf_alpha.blit(text_white, text_white_rect)
-        surf_alpha.blit(text_black, text_black_rect)    
+        surf_alpha.blit(text_black, text_black_rect)
         surf_alpha.blit(text_count_black, text_count_black_rect)
         surf_alpha.blit(text_count_white, text_count_white_rect)
-
 
         sc.blit(surf_alpha, (SIZE_FIELD*COUNT_FIELD, 0))
     elif flagBackground == 2:
         group.update(event_list)
         group.draw(sc)
         text_count_black = my_font2.render(f'{countCheckers[BLACKCHECKER]}', False, (0, 0, 0))
-        text_count_black_rect = text_black.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)*0.75, centery = (80*2))
+        text_count_black_rect = text_black.get_rect(centerx=(W - SIZE_FIELD * COUNT_FIELD) * 0.75, centery=(80 * 2))
         text_count_white = my_font2.render(f'{countCheckers[WHITECHECKER]}', False, (0, 0, 0))
-        text_count_white_rect = text_white.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)*0.25, centery = (80*2))
+        text_count_white_rect = text_white.get_rect(centerx=(W - SIZE_FIELD * COUNT_FIELD) * 0.25, centery=(80*2))
         surf_alpha.fill(ALMOND_CRAYOLA)
         surf_alpha.blit(text_surface, text_rect)
         surf_alpha.blit(text_white, text_white_rect)
-        surf_alpha.blit(text_black, text_black_rect)    
+        surf_alpha.blit(text_black, text_black_rect)
         surf_alpha.blit(text_count_black, text_count_black_rect)
         surf_alpha.blit(text_count_white, text_count_white_rect)
-    
         text_win_surf = my_font2.render(text_win, False, (0, 0, 0))
-        text_win_rect = text_win_surf.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)//2, centery = 80*3)
+        text_win_rect = text_win_surf.get_rect(centerx=(W - SIZE_FIELD * COUNT_FIELD) // 2, centery=80 * 3)
 
         surf_alpha.blit(text_win_surf, text_win_rect)
-        # surf_finish_rect = surf_finish.get_rect(centerx=(W-SIZE_FIELD*COUNT_FIELD)//2, centery = 80*4)
-        # surf_alpha.blit(surf_finish, surf_finish_rect)
         sc.blit(surf_alpha, (SIZE_FIELD*COUNT_FIELD, 0))
         sc.blit(surf_finish, (0, -50))
         if objects[-1].process() == 1:
             flagBackground = 0
     pygame.display.update()
     clock.tick(FPS)
-
-    # print(objects)

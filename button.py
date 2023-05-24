@@ -82,8 +82,3 @@ class Button():
         self.screen.blit(self.buttonSurface, self.buttonRect)
         if flagColor:
             return flagColor
-
-
-
-def myFunction():
-    print('Button Pressed')
