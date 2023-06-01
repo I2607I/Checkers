@@ -1,5 +1,6 @@
 # Checkers
 - stack `python pygame`
+- to run `python3 main.py`
 
 
 Реализованы Русские и Международные шашки.
